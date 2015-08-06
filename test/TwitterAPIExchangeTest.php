@@ -304,4 +304,18 @@ class TwitterAPIExchangeTest extends \PHPUnit_Framework_TestCase
         $data = $this->exchange->request($url, $method, $params);
         $this->assertContains('created_at', $data);
     }
+
+    /**
+     * Test to disprove Bug 415 GET
+     */
+    public function testBug415GET()
+    {
+        $url           = 'https://api.twitter.com/1.1/statuses/show.json';
+        $method        = 'GET';
+        $params        = '?id=628499119364014080';
+
+        $data = $this->exchange->request($url, $method, $params);
+
+        $this->assertContains("created_at", $data);
+    }
 }
