@@ -1,12 +1,12 @@
 <?php
 /*
 Plugin Name: Twitter profile widget
-Plugin URI: 
+Plugin URI:
 Description: Add your twitter profile onto your wordpress website
 Version: 1.0
 Author: Jim Valentine - f13dev
 Author URI: http://f13dev.com
-License: GPL2
+License: MIT
 */
 
 /**
@@ -15,7 +15,7 @@ License: GPL2
 add_action('widgets_init', create_function('', 'return register_widget("WP_Twitter_profile_widget");'));
 
 /**
- * Class Widget_Better_Starter_Widget
+ * Class WP_twitter_profile_widget
  */
 class WP_Twitter_profile_widget extends WP_Widget
 {
@@ -31,12 +31,8 @@ class WP_Twitter_profile_widget extends WP_Widget
 	 */
 	function __construct()
 	{
-		//We're going to use $this->textdomain as both the translation domain and the widget class name and ID
 		$this->textdomain = strtolower(get_class($this));
 
-		//Figure out your textdomain for translations via this handy debug print
-		//var_dump($this->textdomain);
-		
 		//Add fields
 		$this->add_field('title', 'Enter title', '', 'text');
 		$this->add_field('twitter_id', 'Twitter ID', '', 'text');
@@ -46,9 +42,6 @@ class WP_Twitter_profile_widget extends WP_Widget
 		$this->add_field('consumer_key', 'API key', '', 'text');
 		$this->add_field('consumer_key_secret', 'API key secret', '', 'text');
 		$this->add_field('twitter_target', 'Open links in a new window (either enter \'blank\' or leave empty)', 'blank', 'text');
-
-		//Translations
-		load_plugin_textdomain($this->textdomain, false, basename(dirname(__FILE__)) . '/languages' );
 
 		//Init the widget
 		parent::__construct($this->textdomain, __(self::WIDGET_NAME, $this->textdomain), array( 'description' => __(self::WIDGET_DESCRIPTION, $this->textdomain), 'classname' => $this->textdomain));
@@ -64,29 +57,25 @@ class WP_Twitter_profile_widget extends WP_Widget
 	{
 		$title = apply_filters('widget_title', $instance['title']);
 
-		/* Before and after widget arguments are usually modified by themes */
 		echo $args['before_widget'];
 
 		if (!empty($title))
 			echo $args['before_title'] . $title . $args['after_title'];
 
-		/* Widget output here */
 		$this->widget_output($args, $instance);
 
-		/* After widget */
 		echo $args['after_widget'];
 	}
-	
+
 	/**
-	 * This function will execute the widget frontend logic.
-	 * Everything you want in the widget should be output here.
+	 * Function to load the widget
 	 */
 	private function widget_output($args, $instance)
 	{
 		extract($instance);
 
 		/**
-		 * This is where you write your custom code.
+		 * Require the twitter.php file to load the widget content
 		 */
 		require_once('twitter.php');
 	}
@@ -99,6 +88,9 @@ class WP_Twitter_profile_widget extends WP_Widget
 	 */
 	public function form( $instance )
 	{
+		/**
+		 * Create a header with basic instructions.
+		 */
 		?>
 			<br/>
 			Use this widget to add a mini version of your twitter profile as a widget<br/>
@@ -106,7 +98,7 @@ class WP_Twitter_profile_widget extends WP_Widget
 			Get your API and Access token details by creating an app at https://apps.twitter.com/, the widget only requires read access. Copy and paste the details to the associated fields below to authorise the widget.<br/>
 			<br/>
 		<?php
-		/* Generate admin for fields */
+		/* Generate admin form fields */
 		foreach($this->fields as $field_name => $field_data)
 		{
 			if($field_data['type'] === 'text'):
@@ -116,8 +108,7 @@ class WP_Twitter_profile_widget extends WP_Widget
 					<input class="widefat" id="<?php echo $this->get_field_id($field_name); ?>" name="<?php echo $this->get_field_name($field_name); ?>" type="text" value="<?php echo esc_attr(isset($instance[$field_name]) ? $instance[$field_name] : $field_data['default_value']); ?>" />
 				</p>
 			<?php
-			//elseif($field_data['type'] == 'textarea'):
-			//You can implement more field types like this.
+			/* Otherwise show an error */
 			else:
 				echo __('Error - Field type not supported', $this->textdomain) . ': ' . $field_data['type'];
 			endif;
