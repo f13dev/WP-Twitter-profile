@@ -28,4 +28,8 @@ To do
 2. Security testing
 3. Package and add it to the Wordpress plugins site
 
+Screen shots
+------------
+![alt tag](http://f13dev.com/git_images/WP-Twitter-profile_1.png)
+
 **This is not currently intended for implementation**
