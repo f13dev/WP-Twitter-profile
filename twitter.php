@@ -22,9 +22,17 @@ else
     $target = '';
 }
 
-//if (isset($_GET['count'])) {$twitter_count = $_GET['count'];} else {$twitter_count = 20;}
+// Check if $twitter_count is a number, if not set it to 3
+if (!is_numeric($twitter_count))
+{
+    $twitter_count = 3;
+}
+
+// Set the get field to call the twitter username and the number of tweets to retrieve
 $getfield = "?screen_name=$twitter_id&count=$twitter_count";
+// Create a new instance of TwitterAPIExchange
 $twitter = new TwitterAPIExchange($settings);
+// Store the decoded reply
 $string = json_decode($twitter->setGetfield($getfield)
 ->buildOauth($url, $requestMethod)
 ->performRequest(),$assoc = TRUE);
