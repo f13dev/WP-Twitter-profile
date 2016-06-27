@@ -36,13 +36,10 @@ $twitter = new TwitterAPIExchange($settings);
 $string = json_decode($twitter->setGetfield($getfield)
 ->buildOauth($url, $requestMethod)
 ->performRequest(),$assoc = TRUE);
-
+// If there was an error display a message
 if($string["errors"][0]["message"] != "") {echo "<h3>Sorry, there was a problem.</h3><p>Twitter returned the following error message:</p><p><em>".$string[errors][0]["message"]."</em></p>";exit();}
 
-//print_r($string);
-/**
-  * Build profile section
-  */
+// Create the widget CSS - Will eventually be moved to a seperate file!
 echo '
 <style>
 
@@ -54,19 +51,19 @@ echo '
         font-size: 1.15em;
     }
 
-    .tweet_content{
+    .tweet-content{
         color: #555;
     }
 
-    .tweet_content > a{
+    .tweet-content > a{
         color: #' . $string[1]['user']['profile_link_color'] . ';
     }
 
-    .tweet_content > a:hover{
+    .tweet-content > a:hover{
         color: #444;
     }
 
-    .tweet_time{
+    .tweet-time{
         text-align: center;
         font-weight: bold;
         color: #bbb;
@@ -139,40 +136,40 @@ echo '
         font: 13px/1.4 Helvetica, arial, nimbussansl, liberationsans, freesans, clean, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol";
     }
 
-    .twitter_names{
+    .twitter-names{
         display: inline-block;
         vertical-align: top;
         margin-left: 3%;
         margin-top: 5px;
     }
 
-    .twitter_names_link{
+    .twitter-names_link{
         color: #54397e;
         text-decoration: none;
     }
-    .twitter_name{
+    .twitter-name{
         color: #444;
         font-size: 1.15em;
         margin: 0 0 0.1em;
         font-weight: bold;
     }
 
-    .twitter_username{
+    .twitter-username{
         font-size: 1.15em;
         font-weight: 300;
         margin: 0.1em 0;
         color: #666;
     }
 
-    .twitter_description{
+    .twitter-description{
         margin-top: -0.5em;
     }
 
-    .twitter_description > a{
+    .twitter-description > a{
         color: #' . $string[1]['user']['profile_link_color'] . ';
     }
 
-    .twitter_description > a:hover{
+    .twitter-description > a:hover{
         color: #444;
     }
     .twitter-widget-links{
@@ -212,11 +209,11 @@ echo '
         text-align: center;
     }
 
-    .tweet_link{
+    .tweet-link{
         text-decoration: none;
     }
 
-    .tweet_media{
+    .tweet-media{
         max-width: 100%;
         max-height: 300px;
         display: block;
@@ -252,18 +249,19 @@ echo '
     }
 </style>
 ';
+
+// create the widget output
 echo '
 <div class="twitter-widget-container">
-
     <div class="twitter-widget-head-bar">
             <img src="' . $string[0][user][profile_banner_url] . '" class="twitter-banner" />
-            <a ' . $target . ' href="https://twitter.com/' . $string[0]['user']['screen_name'] . '" class="twitter_names_link">
+            <a ' . $target . ' href="https://twitter.com/' . $string[0]['user']['screen_name'] . '" class="twitter-names_link">
                 <img src="' . str_replace('normal', '400x400', $string[0]['user']['profile_image_url_https']) . '" class="twitter-widget-profile-image"/>
-                <span class="twitter_names">
-                    <p class="twitter_name">' .
+                <span class="twitter-names">
+                    <p class="twitter-name">' .
                         $string[0]['user']['name'] . '
                     </p>
-                    <span class="twitter_username">
+                    <span class="twitter-username">
                         @' . $string[0]['user']['screen_name'] . '
                     </span>
                 </span>
@@ -274,7 +272,7 @@ echo '
 
 
         <br style="clear: both;" />
-        <div class="twitter_description">' .
+        <div class="twitter-description">' .
             getLinksFromTwitterText($string[0]['user']['description']) . '
         </div>
 
@@ -333,18 +331,18 @@ if ($twitter_count != 0)
 
             echo '
             <div class="tweet">
-                <div class="tweet_content">' .
+                <div class="tweet-content">' .
                     //$items['text'] . '
                     getLinksFromTwitterText($items['text']) .
-                    '<a href="' . $items['entities']['media'][0]['url'] . '" ' . $target . ' class="tweet_link" />';
+                    '<a href="' . $items['entities']['media'][0]['url'] . '" ' . $target . ' class="tweet-link" />';
                     if ($items['entities']['media'][0]['media_url'] != '')
                     {
                         echo '
-                            <img src="' . $items['entities']['media'][0]['media_url'] . '" class="tweet_media" />';
+                            <img src="' . $items['entities']['media'][0]['media_url'] . '" class="tweet-media" />';
                     }
                     echo '
                     </div>
-                    <div class="tweet_time">' .
+                    <div class="tweet-time">' .
                         $created_at_string . '
                     </div>
                 </a>
