@@ -1,23 +1,29 @@
 <?php
+// Load the twitter API PHP by J7mbo/twitter-api-php
 require_once('TwitterAPIExchange.php');
-/** Set access tokens here - see: https://dev.twitter.com/apps/ **/
+// Set the access tokens
 $settings = array(
     'oauth_access_token' => $access_token,
     'oauth_access_token_secret' => $access_token_secret,
     'consumer_key' => $consumer_key,
     'consumer_secret' => $consumer_key_secret
 );
-
+// Set the API url and request method
 $url = "https://api.twitter.com/1.1/statuses/user_timeline.json";
 $requestMethod = "GET";
-if (isset($_GET['target_blank'])) {$target = ' target="_blank"';} else { $target = null;}
-//if (isset($_GET['user']))  {$user = $_GET['user'];}  else {$user  = "f13dev";}
 
-$user = $twitter_id;
-$count = $twitter_count;
+// if $twitter_target is blank set $target
+if ($twitter_target == 'blank')
+{
+    $target = ' target="_blank" ';
+}
+else
+{
+    $target = '';
+}
 
-//if (isset($_GET['count'])) {$count = $_GET['count'];} else {$count = 20;}
-$getfield = "?screen_name=$user&count=$count";
+//if (isset($_GET['count'])) {$twitter_count = $_GET['count'];} else {$twitter_count = 20;}
+$getfield = "?screen_name=$twitter_id&count=$twitter_count";
 $twitter = new TwitterAPIExchange($settings);
 $string = json_decode($twitter->setGetfield($getfield)
 ->buildOauth($url, $requestMethod)
@@ -197,11 +203,11 @@ echo '
         line-height: 1.7em;
         text-align: center;
     }
-    
+
     .tweet_link{
         text-decoration: none;
     }
-    
+
     .tweet_media{
         max-width: 100%;
         max-height: 300px;
@@ -209,7 +215,7 @@ echo '
         margin-left: auto;
         margin-right: auto;
     }
-    
+
     .twitter-follow-button{
         display: block;
         background-color: #fff;
@@ -224,12 +230,12 @@ echo '
         margin-top: 1em;
         border: 3px solid #' . $string[1]['user']['profile_link_color'] . ';
     }
-    
+
     .twitter-follow-button:hover{
         background-color: #' . $string[1]['user']['profile_link_color'] . ';
         color: #fff;
     }
-    
+
     .twitter-banner{
         width: 100%;
         height: auto;
@@ -263,7 +269,7 @@ echo '
         <div class="twitter_description">' .
             getLinksFromTwitterText($string[0]['user']['description']) . '
         </div>
-        
+
         <a class="twitter-follow-button" href="https://twitter.com/intent/follow?screen_name=' . $string[0]['user']['screen_name'] . '" data-size="large" data-width="960" data-height="600"> Follow @' . $string[0]['user']['screen_name'] . '</a>
 
         <br style="clear: both;" />
@@ -301,7 +307,7 @@ echo '
         <br style="clear: both;" />
     </div>';
 
-if ($count != 0)
+if ($twitter_count != 0)
 {
     echo '
     <div class="twitter-widget-tweets-header">
