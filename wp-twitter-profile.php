@@ -36,11 +36,11 @@ class WP_Twitter_profile_widget extends WP_Widget
 		//Add fields
 		$this->add_field('title', 'Enter title', '', 'text');
 		$this->add_field('twitter_id', 'Twitter ID', '', 'text');
-		$this->add_field('twitter_count', 'Number of tweets to show (enter \'0\' to only show your profile)', '', 'text');
+		$this->add_field('twitter_count', 'Number of tweets to show (enter \'0\' to only show your profile)', '', 'number');
 		$this->add_field('access_token', 'Access token', '', 'text');
-		$this->add_field('access_token_secret', 'Access token secret', '', 'text');
+		$this->add_field('access_token_secret', 'Access token secret', '', 'password');
 		$this->add_field('consumer_key', 'API key', '', 'text');
-		$this->add_field('consumer_key_secret', 'API key secret', '', 'text');
+		$this->add_field('consumer_key_secret', 'API key secret', '', 'password');
 		$this->add_field('twitter_target', 'Open links in a new tab)', 'blank', 'checkbox');
 
 		//Init the widget
@@ -108,6 +108,24 @@ class WP_Twitter_profile_widget extends WP_Widget
 				<p>
 					<label for="<?php echo $this->get_field_id($field_name); ?>"><?php _e($field_data['description'], $this->textdomain ); ?></label>
 					<input class="widefat" id="<?php echo $this->get_field_id($field_name); ?>" name="<?php echo $this->get_field_name($field_name); ?>" type="text" value="<?php echo esc_attr(isset($instance[$field_name]) ? $instance[$field_name] : $field_data['default_value']); ?>" />
+				</p>
+			<?php
+			}
+			elseif($field_data['type'] === 'number')
+			{
+				?>
+				<p>
+					<label for="<?php echo $this->get_field_id($field_name); ?>"><?php _e($field_data['description'], $this->textdomain ); ?></label>
+					<input class="widefat" id="<?php echo $this->get_field_id($field_name); ?>" name="<?php echo $this->get_field_name($field_name); ?>" type="number" value="<?php echo esc_attr(isset($instance[$field_name]) ? $instance[$field_name] : $field_data['default_value']); ?>" />
+				</p>
+			<?php
+			}
+			elseif($field_data['type'] === 'password')
+			{
+				?>
+				<p>
+					<label for="<?php echo $this->get_field_id($field_name); ?>"><?php _e($field_data['description'], $this->textdomain ); ?></label>
+					<input class="widefat" id="<?php echo $this->get_field_id($field_name); ?>" name="<?php echo $this->get_field_name($field_name); ?>" type="password" value="<?php echo esc_attr(isset($instance[$field_name]) ? $instance[$field_name] : $field_data['default_value']); ?>" />
 				</p>
 			<?php
 			}
