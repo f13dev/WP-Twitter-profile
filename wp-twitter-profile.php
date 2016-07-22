@@ -49,7 +49,8 @@ class WP_Twitter_profile_widget extends WP_Widget
 		$this->add_field('access_token_secret', 'Access token secret', '', 'password');
 		$this->add_field('consumer_key', 'API key', '', 'text');
 		$this->add_field('consumer_key_secret', 'API key secret', '', 'password');
-		$this->add_field('twitter_target', 'Open links in a new tab)', 'blank', 'checkbox');
+		$this->add_field('twitter_target', 'Open links in a new tab)', '', 'checkbox');
+		$this->add_field('twitter_timeout', 'Cache timout in minutes', '30', 'number' );
 
 		//Init the widget
 		parent::__construct($this->textdomain, __(self::WIDGET_NAME, $this->textdomain), array( 'description' => __(self::WIDGET_DESCRIPTION, $this->textdomain), 'classname' => $this->textdomain));
