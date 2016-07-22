@@ -13,6 +13,14 @@ License: MIT
  * Register the widget
  */
 add_action('widgets_init', create_function('', 'return register_widget("WP_Twitter_profile_widget");'));
+// Register the CSS
+add_action( 'wp_enqueue_scripts', 'f13_twitter_stylesheet');
+
+function f13_twitter_stylesheet()
+{
+    wp_register_style( 'f13twitter-style', plugins_url('twitter.css', __FILE__));
+    wp_enqueue_style( 'f13twitter-style' );
+}
 
 /**
  * Class WP_twitter_profile_widget

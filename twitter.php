@@ -39,219 +39,9 @@ $string = json_decode($twitter->setGetfield($getfield)
 // If there was an error display a message
 if($string["errors"][0]["message"] != "") {echo "<h3>Sorry, there was a problem.</h3><p>Twitter returned the following error message:</p><p><em>".$string[errors][0]["message"]."</em></p>";exit();}
 
-// Create the widget CSS - Will eventually be moved to a seperate file!
-echo '
-<style>
-
-
-    .tweet{
-        border-top: 0.2em solid #eee;
-        padding: 0.5em;
-        font-weight: 300;
-        font-size: 1.15em;
-    }
-
-    .tweet-content{
-        color: #555;
-    }
-
-    .tweet-content > a{
-        color: #' . $string[1]['user']['profile_link_color'] . ';
-    }
-
-    .tweet-content > a:hover{
-        color: #444;
-    }
-
-    .tweet-time{
-        text-align: center;
-        font-weight: bold;
-        color: #bbb;
-        padding-top: 0.4em;
-    }
-
-    .twitter-widget-header{
-        font-weight: bold;
-        background-color: #f5f5f5;
-        border-bottom: 1px solid #d8d8d8;
-        padding: 5px;
-        margin: 0;
-        margin-bottom: 6px;
-    }
-
-    .twitter-widget-logo{
-        vertical-align: middle;
-        display: inline-block;
-        height: 1.5em;
-        margin-right: 0.250em;
-        right: 0;
-    }
-
-    .twitter-widget-header-text{
-        font-weight: bold;
-        display: inline-block;
-        vertical-align: middle;
-        line-height: 1.5em;
-        color: rgp(57, 66, 78);
-        margin-left: -.5em;
-    }
-
-    .twitter-widget-container{
-        box-stying: border-box;
-        font: 13px/1.4 Helvetica, arial, nimbussansl, liberationsans, freesans, clean, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"
-        background-color #fff;
-        border: 1px solid #d8d8d8;
-        border-radius: 5px;
-        color: #333;
-        width: 100%; /* temporary for view */
-        1px solid #d8d8d8 !important
-    }
-
-    .twitter-widget-header-link{
-        outline: 0;
-        font-weight: bold;
-        vertical-align: middle;
-        line-height: 1.5em;
-        color: rgb(58, 66, 78);
-        text-decoration: none;
-    }
-
-    .twitter-widget-profile-image
-    {
-        border-radius: 5px;
-        width: 23%;
-        display: inline-block;
-        height: auto;
-        max-width: 100%;
-        vertical-align: middle;
-        box-styling: border-box;
-        word-wrap: break-word;
-        margin-top: -35px;
-        margin-left: 10px;
-        border: 3px solid white;
-    }
-
-    .twitter-widget-content{
-        padding: .323em;
-        font: 13px/1.4 Helvetica, arial, nimbussansl, liberationsans, freesans, clean, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol";
-    }
-
-    .twitter-names{
-        display: inline-block;
-        vertical-align: top;
-        margin-left: 3%;
-        margin-top: 5px;
-    }
-
-    .twitter-names_link{
-        color: #54397e;
-        text-decoration: none;
-    }
-    .twitter-name{
-        color: #444;
-        font-size: 1.15em;
-        margin: 0 0 0.1em;
-        font-weight: bold;
-    }
-
-    .twitter-username{
-        font-size: 1.15em;
-        font-weight: 300;
-        margin: 0.1em 0;
-        color: #666;
-    }
-
-    .twitter-description{
-        margin-top: -0.5em;
-    }
-
-    .twitter-description > a{
-        color: #' . $string[1]['user']['profile_link_color'] . ';
-    }
-
-    .twitter-description > a:hover{
-        color: #444;
-    }
-    .twitter-widget-links{
-        display: inline-block;
-        width: 32%;
-        padding: 0;
-        margin: 0;
-        text-align: center;
-        border-bottom: 0.6em solid #fff;
-    }
-
-    .twitter-widget-links:hover{
-        border-bottom: 0.6em solid #' . $string[1]['user']['profile_link_color'] . ';
-    }
-
-    .twitter-widget-links-head{
-        font-size: 1.15em;
-        font-weight: 300;
-        color: #666;
-    }
-
-    .twitter-widget-links-numbers{
-        font-size: 1.4em;
-        font-weight: bold;
-        color: #444;
-    }
-
-    .twitter-widget-profile-link{
-        text-decoration: none;
-    }
-
-    .twitter-widget-tweets-header{
-        font-weight: 300;
-        font-size: 1.15em;
-        color: #777;
-        line-height: 1.7em;
-        text-align: center;
-    }
-
-    .tweet-link{
-        text-decoration: none;
-    }
-
-    .tweet-media{
-        max-width: 100%;
-        max-height: 300px;
-        display: block;
-        margin-left: auto;
-        margin-right: auto;
-    }
-
-    .twitter-follow-button{
-        display: block;
-        background-color: #fff;
-        width: 50%;
-        text-align: center;
-        margin-left: auto;
-        margin-right: auto;
-        padding: 0.5em;
-        border-radius: 7px;
-        color: #' . $string[1]['user']['profile_link_color'] . ';
-        text-decoration: none;
-        margin-top: 1em;
-        border: 3px solid #' . $string[1]['user']['profile_link_color'] . ';
-    }
-
-    .twitter-follow-button:hover{
-        background-color: #' . $string[1]['user']['profile_link_color'] . ';
-        color: #fff;
-    }
-
-    .twitter-banner{
-        width: 100%;
-        height: auto;
-        max-height: 200px;
-        border-radius: 5px 5px 0 0;
-    }
-</style>
-';
 
 // create the widget output
-echo '
+$output = '
 <div class="twitter-widget-container">
     <div class="twitter-widget-head-bar">
             <img src="' . $string[0][user][profile_banner_url] . '" class="twitter-banner" />
@@ -315,7 +105,7 @@ echo '
 
 if ($twitter_count != 0)
 {
-    echo '
+    $output .= '
     <div class="twitter-widget-tweets-header">
         Recent tweets
     </div>';
@@ -329,7 +119,7 @@ if ($twitter_count != 0)
             $created_at_string .= ' - ';
             $created_at_string .= $created_at[2] . ' ' . $created_at[1] . ' ' . $created_at[5];
 
-            echo '
+            $output .= '
             <div class="tweet">
                 <div class="tweet-content">' .
                     //$items['text'] . '
@@ -337,10 +127,10 @@ if ($twitter_count != 0)
                     '<a href="' . $items['entities']['media'][0]['url'] . '" ' . $target . ' class="tweet-link" />';
                     if ($items['entities']['media'][0]['media_url'] != '')
                     {
-                        echo '
+                        $output .= '
                             <img src="' . $items['entities']['media'][0]['media_url'] . '" class="tweet-media" />';
                     }
-                    echo '
+                    $output .= '
                     </div>
                     <div class="tweet-time">' .
                         $created_at_string . '
@@ -351,7 +141,9 @@ if ($twitter_count != 0)
 
         }
 }
-echo '</div>';
+$output .= '</div>';
+
+echo $output;
 
 
 function getLinksFromTwitterText($string, $target)
