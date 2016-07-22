@@ -36,34 +36,52 @@ $twitter = new TwitterAPIExchange($settings);
 $string = json_decode($twitter->setGetfield($getfield)
 ->buildOauth($url, $requestMethod)
 ->performRequest(),$assoc = TRUE);
+
 // If there was an error display a message
-if($string["errors"][0]["message"] != "") {echo "<h3>Sorry, there was a problem.</h3><p>Twitter returned the following error message:</p><p><em>".$string[errors][0]["message"]."</em></p>";exit();}
+if($string["errors"][0]["message"] != "")
+{
+    $output = "<h3>Sorry, there was a problem.</h3><p>Twitter returned the following error message:</p><p><em>".$string[errors][0]["message"]."</em></p>";exit();
+}
+else
+{
+    // There is no error message, attempt to create the widget
 
+    // From now on the output will be cached using transient
+    // Set the cache name and prefix
+    $cache = get_transient('f13twitter' . md5(serialize($atts)));
 
-// create the widget output
-$output = '
-<div class="twitter-widget-container">
-    <div class="twitter-widget-head-bar">
-            <img src="' . $string[0][user][profile_banner_url] . '" class="twitter-banner" />
-            <a ' . $target . ' href="https://twitter.com/' . $string[0]['user']['screen_name'] . '" class="twitter-names_link">
-                <img src="' . str_replace('normal', '400x400', $string[0]['user']['profile_image_url_https']) . '" class="twitter-widget-profile-image"/>
-                <span class="twitter-names">
-                    <p class="twitter-name">' .
-                        $string[0]['user']['name'] . '
-                    </p>
-                    <span class="twitter-username">
-                        @' . $string[0]['user']['screen_name'] . '
-                    </span>
-                </span>
-            </a>
+    if ($cache)
+    {
+        // If the cache exists, return it rather than re-creating it
+        $output = $cache;
+    }
+    else
+    {
+
+        // create the widget output
+        $output = '
+        <div class="twitter-widget-container">
+        <div class="twitter-widget-head-bar">
+        <img src="' . $string[0][user][profile_banner_url] . '" class="twitter-banner" />
+        <a ' . $target . ' href="https://twitter.com/' . $string[0]['user']['screen_name'] . '" class="twitter-names_link">
+        <img src="' . str_replace('normal', '400x400', $string[0]['user']['profile_image_url_https']) . '" class="twitter-widget-profile-image"/>
+        <span class="twitter-names">
+        <p class="twitter-name">' .
+        $string[0]['user']['name'] . '
+        </p>
+        <span class="twitter-username">
+        @' . $string[0]['user']['screen_name'] . '
+        </span>
+        </span>
+        </a>
         </div>
-    <div class="twitter-widget-content">
+        <div class="twitter-widget-content">
 
 
 
         <br style="clear: both;" />
         <div class="twitter-description">' .
-            getLinksFromTwitterText($string[0]['user']['description'], $twitter_target) . '
+        getLinksFromTwitterText($string[0]['user']['description'], $twitter_target) . '
         </div>
 
         <a ' . $target . 'class="twitter-follow-button" href="https://twitter.com/intent/follow?screen_name=' . $string[0]['user']['screen_name'] . '" data-size="large" data-width="960" data-height="600"> Follow @' . $string[0]['user']['screen_name'] . '</a>
@@ -71,80 +89,94 @@ $output = '
         <br style="clear: both;" />
 
         <a ' . $target . ' href="https://twitter.com/' . $string[0]['user']['screen_name'] .  '" ' . $target . ' class="twitter-widget-profile-link">
-            <div class="twitter-widget-links">
-                <div class="twitter-widget-links-head">
-                    Tweets
-                </div>
-                <div class="twitter-widget-links-numbers">' .
-                    $string[0]['user']['statuses_count'] . '
-                </div>
-            </div>
+        <div class="twitter-widget-links">
+        <div class="twitter-widget-links-head">
+        Tweets
+        </div>
+        <div class="twitter-widget-links-numbers">' .
+        $string[0]['user']['statuses_count'] . '
+        </div>
+        </div>
         </a>
         <a ' . $target . ' href="https://twitter.com/' . $string[0]['user']['screen_name'] .  '/following" ' . $target . ' class="twitter-widget-profile-link">
-            <div class="twitter-widget-links">
-                <div class="twitter-widget-links-head">
-                    Following
-                </div>
-                <div class="twitter-widget-links-numbers">' .
-                    $string[0]['user']['friends_count'] . '
-                </div>
-            </div>
+        <div class="twitter-widget-links">
+        <div class="twitter-widget-links-head">
+        Following
+        </div>
+        <div class="twitter-widget-links-numbers">' .
+        $string[0]['user']['friends_count'] . '
+        </div>
+        </div>
         </a>
         <a ' . $target . ' href="https://twitter.com/' . $string[0]['user']['screen_name'] .  '/followers" ' . $target . ' class="twitter-widget-profile-link">
-            <div class="twitter-widget-links">
-                <div class="twitter-widget-links-head">
-                    Followers
-                </div>
-                <div class="twitter-widget-links-numbers">' .
-                    $string[0]['user']['followers_count'] . '
-                </div>
-            </div>
+        <div class="twitter-widget-links">
+        <div class="twitter-widget-links-head">
+        Followers
+        </div>
+        <div class="twitter-widget-links-numbers">' .
+        $string[0]['user']['followers_count'] . '
+        </div>
+        </div>
         </a>
         <br style="clear: both;" />
-    </div>';
+        </div>';
 
-if ($twitter_count != 0)
-{
-    $output .= '
-    <div class="twitter-widget-tweets-header">
-        Recent tweets
-    </div>';
-
-    foreach($string as $items)
+        if ($twitter_count != 0)
         {
-
-            $created_at = explode(" ", $items['created_at']);
-            $created_at_time = explode(":", $created_at[3]);
-            $created_at_string = $created_at_time[0] . ':' . $created_at_time[1] . ' ';
-            $created_at_string .= ' - ';
-            $created_at_string .= $created_at[2] . ' ' . $created_at[1] . ' ' . $created_at[5];
-
             $output .= '
-            <div class="tweet">
-                <div class="tweet-content">' .
-                    //$items['text'] . '
-                    getLinksFromTwitterText($items['text'], $twitter_target) .
-                    '<a href="' . $items['entities']['media'][0]['url'] . '" ' . $target . ' class="tweet-link" />';
-                    if ($items['entities']['media'][0]['media_url'] != '')
-                    {
-                        $output .= '
-                            <img src="' . $items['entities']['media'][0]['media_url'] . '" class="tweet-media" />';
-                    }
-                    $output .= '
-                    </div>
-                    <div class="tweet-time">' .
-                        $created_at_string . '
-                    </div>
-                </a>
+            <div class="twitter-widget-tweets-header">
+            Recent tweets
             </div>';
 
+            foreach($string as $items)
+            {
 
+                $created_at = explode(" ", $items['created_at']);
+                $created_at_time = explode(":", $created_at[3]);
+                $created_at_string = $created_at_time[0] . ':' . $created_at_time[1] . ' ';
+                $created_at_string .= ' - ';
+                $created_at_string .= $created_at[2] . ' ' . $created_at[1] . ' ' . $created_at[5];
+
+                $output .= '
+                <div class="tweet">
+                <div class="tweet-content">' .
+                //$items['text'] . '
+                getLinksFromTwitterText($items['text'], $twitter_target) .
+                '<a href="' . $items['entities']['media'][0]['url'] . '" ' . $target . ' class="tweet-link" />';
+                if ($items['entities']['media'][0]['media_url'] != '')
+                {
+                    $output .= '
+                    <img src="' . $items['entities']['media'][0]['media_url'] . '" class="tweet-media" />';
+                }
+                $output .= '
+                </div>
+                <div class="tweet-time">' .
+                $created_at_string . '
+                </div>
+                </a>
+                </div>';
+
+
+            }
         }
+        $output .= '</div>';
+
+        // Get the timout in seconds
+        $timeout = $twitter_timeout * 60;
+
+        // If the timeout is 0, set it to 1 second
+        if ($timeout == 0)
+        {
+            $timeout = 1;
+        }
+
+        // Store the output into the cache
+        set_transient('f13twitter' . md5(serialize($atts)), $output, $timeout);
+
+    }
+
+    echo $output;
 }
-$output .= '</div>';
-
-echo $output;
-
 
 function getLinksFromTwitterText($string, $target)
 {
