@@ -13,7 +13,7 @@ $url = "https://api.twitter.com/1.1/statuses/user_timeline.json";
 $requestMethod = "GET";
 
 // if $twitter_target is blank set $target
-if ($twitter_target == 'blank')
+if ($twitter_target == 'on' || $twitter_target == true)
 {
     $target = ' target="_blank" ';
 }
@@ -273,14 +273,14 @@ echo '
 
         <br style="clear: both;" />
         <div class="twitter-description">' .
-            getLinksFromTwitterText($string[0]['user']['description']) . '
+            getLinksFromTwitterText($string[0]['user']['description'], $twitter_target) . '
         </div>
 
-        <a class="twitter-follow-button" href="https://twitter.com/intent/follow?screen_name=' . $string[0]['user']['screen_name'] . '" data-size="large" data-width="960" data-height="600"> Follow @' . $string[0]['user']['screen_name'] . '</a>
+        <a ' . $target . 'class="twitter-follow-button" href="https://twitter.com/intent/follow?screen_name=' . $string[0]['user']['screen_name'] . '" data-size="large" data-width="960" data-height="600"> Follow @' . $string[0]['user']['screen_name'] . '</a>
 
         <br style="clear: both;" />
 
-        <a href="https://twitter.com/' . $string[0]['user']['screen_name'] .  '" ' . $target . ' class="twitter-widget-profile-link">
+        <a ' . $target . ' href="https://twitter.com/' . $string[0]['user']['screen_name'] .  '" ' . $target . ' class="twitter-widget-profile-link">
             <div class="twitter-widget-links">
                 <div class="twitter-widget-links-head">
                     Tweets
@@ -290,7 +290,7 @@ echo '
                 </div>
             </div>
         </a>
-        <a href="https://twitter.com/' . $string[0]['user']['screen_name'] .  '/following" ' . $target . ' class="twitter-widget-profile-link">
+        <a ' . $target . ' href="https://twitter.com/' . $string[0]['user']['screen_name'] .  '/following" ' . $target . ' class="twitter-widget-profile-link">
             <div class="twitter-widget-links">
                 <div class="twitter-widget-links-head">
                     Following
@@ -300,7 +300,7 @@ echo '
                 </div>
             </div>
         </a>
-        <a href="https://twitter.com/' . $string[0]['user']['screen_name'] .  '/followers" ' . $target . ' class="twitter-widget-profile-link">
+        <a ' . $target . ' href="https://twitter.com/' . $string[0]['user']['screen_name'] .  '/followers" ' . $target . ' class="twitter-widget-profile-link">
             <div class="twitter-widget-links">
                 <div class="twitter-widget-links-head">
                     Followers
@@ -333,7 +333,7 @@ if ($twitter_count != 0)
             <div class="tweet">
                 <div class="tweet-content">' .
                     //$items['text'] . '
-                    getLinksFromTwitterText($items['text']) .
+                    getLinksFromTwitterText($items['text'], $twitter_target) .
                     '<a href="' . $items['entities']['media'][0]['url'] . '" ' . $target . ' class="tweet-link" />';
                     if ($items['entities']['media'][0]['media_url'] != '')
                     {
@@ -354,13 +354,20 @@ if ($twitter_count != 0)
 echo '</div>';
 
 
-function getLinksFromTwitterText($string)
+function getLinksFromTwitterText($string, $target)
 {
-    $string = preg_replace('~(?:(https?)://([^\s<]+)|(www\.[^\s<]+?\.[^\s<]+))(?<![\.,:])~i', '<a href="$0" ' . $target . ' " title="$0">$0</a>', $string);
+    $string = preg_replace('~(?:(https?)://([^\s<]+)|(www\.[^\s<]+?\.[^\s<]+))(?<![\.,:])~i', '<a href="$0" " title="$0">$0</a>', $string);
     // Converts hashtags to a link
-    $string = preg_replace("/#([A-Za-z0-9\/\.]*)/", "<a href=\"http://twitter.com/search?q=$1\" " . $target . " >#$1</a>", $string);
+    $string = preg_replace("/#([A-Za-z0-9\/\.]*)/", "<a href=\"http://twitter.com/search?q=$1\" >#$1</a>", $string);
     // Converts @user to a link
-    $string = preg_replace("/@([A-Za-z0-9\/\.]*)/", "<a href=\"http://www.twitter.com/$1\" $target >@$1</a>", $string);
+    $string = preg_replace("/@([A-Za-z0-9\/\.]*)/", "<a href=\"http://www.twitter.com/$1\" >@$1</a>", $string);
+
+    // If target blank is set to on, add the target to the link
+    if ($target == 'on' || $target == true)
+    {
+        $string = preg_replace("/<a(.*?)>/", "<a$1 target=\"_blank\">", $string);
+    }
+
     return $string;
 }
 ?>
