@@ -41,7 +41,7 @@ class WP_Twitter_profile_widget extends WP_Widget
 		$this->add_field('access_token_secret', 'Access token secret', '', 'text');
 		$this->add_field('consumer_key', 'API key', '', 'text');
 		$this->add_field('consumer_key_secret', 'API key secret', '', 'text');
-		$this->add_field('twitter_target', 'Open links in a new window (either enter \'blank\' or leave empty)', 'blank', 'text');
+		$this->add_field('twitter_target', 'Open links in a new tab)', 'blank', 'checkbox');
 
 		//Init the widget
 		parent::__construct($this->textdomain, __(self::WIDGET_NAME, $this->textdomain), array( 'description' => __(self::WIDGET_DESCRIPTION, $this->textdomain), 'classname' => $this->textdomain));
@@ -61,6 +61,7 @@ class WP_Twitter_profile_widget extends WP_Widget
 
 		if (!empty($title))
 			echo $args['before_title'] . $title . $args['after_title'];
+
 
 		$this->widget_output($args, $instance);
 
@@ -101,17 +102,36 @@ class WP_Twitter_profile_widget extends WP_Widget
 		/* Generate admin form fields */
 		foreach($this->fields as $field_name => $field_data)
 		{
-			if($field_data['type'] === 'text'):
+			if($field_data['type'] === 'text')
+			{
 				?>
 				<p>
 					<label for="<?php echo $this->get_field_id($field_name); ?>"><?php _e($field_data['description'], $this->textdomain ); ?></label>
 					<input class="widefat" id="<?php echo $this->get_field_id($field_name); ?>" name="<?php echo $this->get_field_name($field_name); ?>" type="text" value="<?php echo esc_attr(isset($instance[$field_name]) ? $instance[$field_name] : $field_data['default_value']); ?>" />
 				</p>
 			<?php
+			}
+			elseif($field_data['type'] === 'checkbox')
+			{
+			?>
+				<p>
+					<label for="<?php echo $this->get_field_id($field_name); ?>"><?php _e($field_data['description'], $this->textdomain ); ?></label><br />
+					<input id="<?php echo $this->get_field_id($field_name); ?>" name="<?php echo $this->get_field_name($field_name); ?>" type="checkbox"
+					<?php
+					if (esc_attr($instance[$field_name]) == true)
+					{
+						echo ' checked';
+					}
+					?>
+					/>
+				</p>
+			<?php
+			}
 			/* Otherwise show an error */
-			else:
+			else
+			{
 				echo __('Error - Field type not supported', $this->textdomain) . ': ' . $field_data['type'];
-			endif;
+			}
 		}
 	}
 
