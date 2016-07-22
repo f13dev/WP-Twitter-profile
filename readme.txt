@@ -4,7 +4,7 @@ Donate link: http://f13dev.com/
 Tags: twitter, widget, profile, tweets
 Requires at least: 4.0
 Tested up to: 4.5.3
-Stable tag: 4.5.3
+Stable tag: 1.1.1
 License: MIT
 License URI: https://opensource.org/licenses/MIT
 
@@ -45,6 +45,14 @@ The required details can be obtained by registering an app at https://apps.twitt
 3. The WP Twitter profile widget, showing a Twitter profile with only the most recent tweet, which also has an image attached which is displayed as a link to the tweet.
 
 == Changelog ==
+
+= 1.1.1 =
+* Fixing missing CSS file
+
+= 1.1.0 =
+* Adding transient cache
+* Correcting href target code
+* Altering admin backend, changing target to checkbox, adding cache timeout, changing secret fields to type=password
 
 = 1.0 =
 * Initial release

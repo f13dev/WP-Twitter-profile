@@ -3,7 +3,7 @@
 Plugin Name: Twitter profile widget
 Plugin URI:
 Description: Add your twitter profile onto your wordpress website
-Version: 1.0
+Version: 1.1.1
 Author: Jim Valentine - f13dev
 Author URI: http://f13dev.com
 License: MIT
